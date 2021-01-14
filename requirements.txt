@@ -1,0 +1,5 @@
+gunicorn    # necesario para desplegar/ejecutar en Heroku
+Flask
+pymongo
+dnspython
+python-dotenv

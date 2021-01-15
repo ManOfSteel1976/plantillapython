@@ -12,10 +12,7 @@
     Crear tesoro
     <span style="margin-left: 5px;" class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
 </a>
-<a class="btn btn-primary" href="/newcaza">
-    Empezar la caza
-    <span style="margin-left: 5px;" class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
-</a>
+
 <br/>
 <br/>
 
@@ -28,12 +25,18 @@
             {% for gan in ganador %}
             {{ gan.ganador }}
             {% endfor %}
+            <a class="btn btn-primary" href="/newcaza">
+                Empezar la caza
+                <span style="margin-left: 5px;" class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+            </a>
         </div>
         <div class="col-md-3"></div>
 
     </div>
 </div>
 {% endif %}
+
+
 
         <script type="text/javascript">
             window.onload = function() {

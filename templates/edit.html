@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-lg-12 text-center">
-        <h1>Editar anuncio <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></h1>
+        <h1>Editar tesoro <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></h1>
     </div>
 </div>
 <br/>
@@ -16,31 +16,23 @@
     <div class="col-md-8">
         <form class="form-horizontal" role="form" action="" method="post">
             <div class="form-group">
-                <label for="inputAuthor" class="col-sm-3 control-label">Email</label>
+                <label for="inputId" class="col-sm-3 control-label">Id</label>
 
                 <div class="col-sm-6">
-                    <input type="email" class="form-control" name="inputAuthor" id="inputAuthor" placeholder="author" value="{{ ad.author }}">
+                    <input type="text" class="form-control" name="inputId" id="inputId" placeholder="id" value="{{ tes.id }}">
                 </div>
             </div>
             <div class="form-group">
-                <label for="inputText" class="col-sm-3 control-label">Descripci&oacute;n</label>
+                <label for="inputText" class="col-sm-3 control-label">Pista</label>
 
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="inputText" id="inputText"
-                           placeholder="text" value="{{ ad.text }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="inputPriority" class="col-sm-3 control-label">Prioridad</label>
-
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" name="inputPriority" id="inputPriority"
-                           placeholder="priority" value="{{ ad.priority }}">
+                    <input type="text" class="form-control" name="inputPista" id="inputPista"
+                           placeholder="text" value="{{ tes.pista }}">
                 </div>
             </div>
             <div class="form-group text-center">
                 <button type="submit" value="submit" class="btn btn-warning">Actualizar</button>
-                <a class="btn btn-danger" href ="/delete/{{ ad._id }}">Eliminar</a>
+                <a class="btn btn-danger" href ="/delete/{{ tes._id }}">Eliminar</a>
             </div>
         </form>
     </div>

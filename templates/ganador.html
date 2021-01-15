@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-12 text-center">
+        <h1>Buscatesoros (MongoDB y Heroku)<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></h1>
+
+    </div>
+</div>
+<br/>
+<a class="btn btn-primary" href="/new">
+    Crear tesoro
+    <span style="margin-left: 5px;" class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+</a>
+<a class="btn btn-primary" href="/newcaza">
+    Empezar la caza
+    <span style="margin-left: 5px;" class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+</a>
+<br/>
+<br/>
+
+{% if ganador|count > 0 %}
+<div class="row">
+    <div class="col-lg-12 text-center">
+        <div class="col-md-3"></div>
+        <div class="col-md-6 bg-warning warning_mesagge">
+            <label>Ha ganado el jugador </label>
+            {% for gan in ganador %}
+            {{ gan.ganador }}
+            {% endfor %}
+        </div>
+        <div class="col-md-3"></div>
+
+    </div>
+</div>
+{% endif %}
+
+        <script type="text/javascript">
+            window.onload = function() {
+                if(!window.location.hash) {
+                    window.location = window.location + '#loaded';
+                    window.location.reload();
+                }
+            }
+        </script>
+
+{% endblock content %}

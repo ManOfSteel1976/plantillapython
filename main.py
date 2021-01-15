@@ -16,48 +16,74 @@ client = pymongo.MongoClient(uri)
 
 db = client.get_default_database()  
 
-ads = db['ads']
+tesoros = db['tesoros']
+encontrados = db['encontrados']
+usuarios = db['usuarios']
+ganador = db['ganador']
+correo = "-"
+numencontrados = 0
 
 # Definicion de metodos para endpoints
 
-@app.route('/', methods=['GET'])
-def showAds():
-    
-    return render_template('ads.html', ads = list(ads.find().sort('date',pymongo.DESCENDING)))
+@app.route('/', methods = ['GET', 'POST'])
+def newUser():
+
+    if request.method == 'GET' :
+        return render_template('newuser.html')
+    else:
+        global correo
+        correo = request.form['inputEmail']
+        usr = {'email': correo, 
+              'date': datetime.now()
+             }
+        
+        if correo!="-" and usuarios.find({'email':correo}).count()==0 :
+            usuarios.insert_one(usr)
+        return redirect(url_for('showTesoros'))
+
+@app.route('/tesoros', methods=['GET'])
+def showTesoros():
+    if ganador.count()>0 or numencontrados==tesoros.count() :
+        return render_template('ganador.html', ganador = list(ganador.find()))
+    else:
+        return render_template('tesoros.html', tesoros = list(tesoros.find().sort('date',pymongo.ASCENDING)))    
     
 @app.route('/new', methods = ['GET', 'POST'])
-def newAd():
+def newTesoro():
 
     if request.method == 'GET' :
         return render_template('new.html')
     else:
-        ad = {'author': request.form['inputAuthor'],
-              'text': request.form['inputText'], 
-              'priority': int(request.form['inputPriority']),
-              'date': datetime.now()
+        tes = {'id': int(request.form['inputId']),
+              'pista': request.form['inputPista'], 
+              'date': datetime.now(),
              }
-        ads.insert_one(ad)
-        return redirect(url_for('showAds'))
+        tesoros.insert_one(tes)
+        return redirect(url_for('showTesoros'))
 
-@app.route('/edit/<_id>', methods = ['GET', 'POST'])
-def editAd(_id):
-    
-    if request.method == 'GET' :
-        ad = ads.find_one({'_id': ObjectId(_id)})
-        return render_template('edit.html', ad = ad)
-    else:
-        ad = { 'author': request.form['inputAuthor'],
-               'text': request.form['inputText'],
-               'priority' : int(request.form['inputPriority'])
-             }
-        ads.update_one({'_id': ObjectId(_id) }, { '$set': ad })    
-        return redirect(url_for('showAds'))
+@app.route('/newcaza', methods = ['GET', 'POST'])
+def newCaza():
+    encontrados.drop()
+    ganador.drop()
+    global numencontrados
+    numencontrados=0
+    return redirect(url_for('showTesoros'))
 
-@app.route('/delete/<_id>', methods = ['GET'])
-def deleteAd(_id):
-    
-    adds.delete_one({'_id': ObjectId(_id)})
-    return redirect(url_for('showAds'))
+
+@app.route('/encontrado/<id>', methods = ['GET'])
+def findTesoro(id):
+    nuevo = {'id': id,
+           'jugador': correo,
+           'date': datetime.now(),
+    }
+    if correo!="-" and encontrados.find({'id':id,'jugador' : correo}).count()==0 :
+        encontrados.insert_one(nuevo)
+        global numencontrados
+        numencontrados=numencontrados+1
+    if numencontrados==tesoros.count() :
+        ganador.insert_one({'ganador':correo})
+
+    return redirect(url_for('showTesoros'))
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App Engine

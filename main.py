@@ -39,7 +39,7 @@ def newUser():
         
         if correo!="-" and usuarios.find({'email':correo}).count()==0 :
             usuarios.insert_one(usr)
-        f = open ('sesion.txt','w')
+        f = open ('%USERPROFILE%/sesion.txt','w')
         f.write(correo)
         f.close()
         return redirect(url_for('showTesoros'))
@@ -75,7 +75,7 @@ def newCaza():
 
 @app.route('/encontrado/<id>', methods = ['GET'])
 def findTesoro(id):
-    f = open ('sesion.txt','r')
+    f = open ('%USERPROFILE%/sesion.txt','r')
     sesion=f.read()
     f.close()
     nuevo = {'id': id,

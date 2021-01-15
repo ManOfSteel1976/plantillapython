@@ -39,6 +39,9 @@ def newUser():
         
         if correo!="-" and usuarios.find({'email':correo}).count()==0 :
             usuarios.insert_one(usr)
+        f = open ('sesion.txt','w')
+        f.write(correo)
+        f.close()
         return redirect(url_for('showTesoros'))
 
 @app.route('/tesoros', methods=['GET'])
@@ -72,16 +75,19 @@ def newCaza():
 
 @app.route('/encontrado/<id>', methods = ['GET'])
 def findTesoro(id):
+    f = open ('sesion.txt','r')
+    sesion=f.read()
+    f.close()
     nuevo = {'id': id,
-           'jugador': correo,
+           'jugador': sesion,
            'date': datetime.now(),
     }
-    if correo!="-" and encontrados.find({'id':id,'jugador' : correo}).count()==0 :
+    if sesion!="-" and encontrados.find({'id':id,'jugador' : sesion}).count()==0 :
         encontrados.insert_one(nuevo)
         global numencontrados
         numencontrados=numencontrados+1
     if numencontrados==tesoros.count() :
-        ganador.insert_one({'ganador':correo})
+        ganador.insert_one({'ganador':sesion})
 
     return redirect(url_for('showTesoros'))
 

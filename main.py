@@ -3,10 +3,11 @@ import os
 import pymongo
 
 from bson import ObjectId
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = 'esto-es-una-clave-muy-secreta'
 
 # uri = 'mongodb+srv://canal:canal@cluster0.vodgj.mongodb.net/appsNube?retryWrites=true&w=majority'
 
@@ -36,17 +37,16 @@ def newUser():
         usr = {'email': correo, 
               'date': datetime.now()
              }
-        
-        if correo!="-" and usuarios.find({'email':correo}).count()==0 :
+        session['email']=correo
+        session['contador']=0
+        if session['email']!="-" and usuarios.find({'email':session['email']}).count()==0 :
             usuarios.insert_one(usr)
-        f = open ('c:/temp/sesion.txt','w')
-        f.write(correo)
-        f.close()
+
         return redirect(url_for('showTesoros'))
 
 @app.route('/tesoros', methods=['GET'])
 def showTesoros():
-    if ganador.count()>0 or numencontrados==tesoros.count() :
+    if ganador.count()>0 or session['contador']==tesoros.count() :
         return render_template('ganador.html', ganador = list(ganador.find()))
     else:
         return render_template('tesoros.html', tesoros = list(tesoros.find().sort('date',pymongo.ASCENDING)))    
@@ -68,26 +68,22 @@ def newTesoro():
 def newCaza():
     encontrados.drop()
     ganador.drop()
-    global numencontrados
-    numencontrados=0
+    session['contador']=0
     return redirect(url_for('showTesoros'))
 
 
 @app.route('/encontrado/<id>', methods = ['GET'])
 def findTesoro(id):
-    f = open ('c:/temp/sesion.txt','r')
-    sesion=f.read()
-    f.close()
+
     nuevo = {'id': id,
-           'jugador': sesion,
+           'jugador': session['email'],
            'date': datetime.now(),
     }
-    if sesion!="-" and encontrados.find({'id':id,'jugador' : sesion}).count()==0 :
+    if session['email']!="-" and encontrados.find({'id':id,'jugador' : session['email']}).count()==0 :
         encontrados.insert_one(nuevo)
-        global numencontrados
-        numencontrados=numencontrados+1
-    if numencontrados==tesoros.count() :
-        ganador.insert_one({'ganador':sesion})
+        session['contador']=session['contador']+1
+    if session['contador']==tesoros.count() and ganador.count()==0:
+        ganador.insert_one({'ganador':session['email']})
 
     return redirect(url_for('showTesoros'))
 
